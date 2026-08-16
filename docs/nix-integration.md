@@ -1,12 +1,12 @@
 # Nix integration sketch
 
 Written on a phone without the repo open, so **every reference to
-`nix/lib/cargo` is an assumption**. §6 lists what to verify first; the shapes
+`platform/nix/lib/cargo` is an assumption**. §6 lists what to verify first; the shapes
 below are the requirements, not the final API.
 
-## 1. Why this project fits `nix/lib/cargo` specifically
+## 1. Why this project fits `platform/nix/lib/cargo` specifically
 
-`nix/lib/cargo` builds per-crate derivations with gradual rebuilds. Fe-C's
+`platform/nix/lib/cargo` builds per-crate derivations with gradual rebuilds. Fe-C's
 hardening dial is *also* per-crate. They compose exactly:
 
 ```text
@@ -91,7 +91,7 @@ that shell out to nix so there is one execution path, not two.
 
 ## 6. API questions — answered at the computer (Task A1, 2026-07-21)
 
-Verified against `nix/lib/cargo` as of the `fe-c/v0` branch point.
+Verified against `platform/nix/lib/cargo` as of the `fe-c/v0` branch point.
 
 1. **Per-crate env / wrapper settings: no, workspace-wide only.**
    `buildCargoProject` accepts `rustcFlags` and `toolchain` for the whole
@@ -116,17 +116,17 @@ Verified against `nix/lib/cargo` as of the `fe-c/v0` branch point.
 4. **Vendoring: solved and reusable for the corpus.** `Cargo.lock` is
    parsed in pure nix (`lib/lock.nix`), each crate fetched with `fetchurl`
    from `static.crates.io` by lockfile checksum, and registry metadata
-   comes from a committed mini-index snapshot (`nix/lib/cargo/index`,
+   comes from a committed mini-index snapshot (`platform/nix/lib/cargo/index`,
    maintained by `tools/snapshot-index.nu`). Corpus fixtures pin
    vulnerable versions in their own lockfiles and extend the snapshot
    index; checks stay pure/offline.
 5. **`cc`-crate builds: yes.** `build/crate-builder.nu` runs `build.rs`
    with the full `cargo:` directive protocol; native deps arrive via
-   `crateOverrides` (see `rust/xz`'s `liblzma-sys` override). Pointing a
+   `crateOverrides` (see `safety/oxidized/xz`'s `liblzma-sys` override). Pointing a
    *single* crate at an instrumented vs plain toolchain is the same
    missing per-crate knob as Q1.
 6. **Toolchain-keyed derivations: precedent exists.** `toolchain` accepts
-   any drv providing `bin/rustc`; `rust/systemd`'s `rust-systemd-dev`
+   any drv providing `bin/rustc`; `safety/oxidized/systemd`'s `rust-systemd-dev`
    already passes `rust-bin.nightly.latest` from the `rust-overlay` flake
    input, and `effectiveRustcVersion` enters every artifact key. Fe-C pins
    `nightly-2026-06-29` (the newest date the locked `rust-overlay` input

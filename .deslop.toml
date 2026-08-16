@@ -27,7 +27,7 @@ disabled_rules = [
   # table and the interceptors are unavoidably unsafe. Every unsafe block
   # carries a prose SAFETY rationale, but the heuristic does not recognize
   # trait-impl (`GlobalAlloc`) and fn-level `unsafe fn` forms. Same call as
-  # rust/bash's config: the density is inherent, not a lint gap.
+  # safety/oxidized/bash's config: the density is inherent, not a lint gap.
   "unsafe_without_safety_comment",
 
   # The allocation table and quarantine are deliberately global,
@@ -46,7 +46,7 @@ disabled_rules = [
 
   # libc interposition (interpose.rs) is quintessential FFI: dlsym returns
   # `*mut c_void` that must be transmuted to typed fn pointers, and the
-  # bootstrap buffer does raw pointer arithmetic. Same call as rust/bash.
+  # bootstrap buffer does raw pointer arithmetic. Same call as safety/oxidized/bash.
   "rust_unsafe_raw_pointer_cast",
 
   # `from_raw_parts` with a length the buffer does not have is not a mistake
@@ -56,7 +56,7 @@ disabled_rules = [
   # real CVEs with the same shape (elf-rs-0079, binary-vec-io-0109). A rule
   # that fires on the bug under test cannot distinguish a corpus from a
   # regression. Directory-wide because the pre-commit hook scans from
-  # rust/fe-c whenever any file under it changes, so a nested corpus config
+  # safety/fe-c whenever any file under it changes, so a nested corpus config
   # would not be consulted.
   "rust_unsafe_from_raw_parts",
 

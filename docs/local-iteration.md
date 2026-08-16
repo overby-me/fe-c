@@ -20,7 +20,7 @@ nix build --no-link --print-out-paths --impure --expr \
          system = "x86_64-linux";
          overlays = [ f.inputs.rust-overlay.overlays.default ];
        };
-   in pkgs.rust-bin.fromRustupToolchainFile ./rust/fe-c/rust-toolchain.toml'
+   in pkgs.rust-bin.fromRustupToolchainFile ./safety/fe-c/rust-toolchain.toml'
 ```
 
 This prints a store path like `…-rust-minimal-<version>-nightly-<date>`; call it
